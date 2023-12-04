@@ -3,11 +3,11 @@
 
 #define TAG "wifi"
 // TODO: DELETE
-// #define SSID "NETIASPOT-BcgF4Zc-2.4G"
-// #define PASS "bVF7hRUnhD42x8hEZY"
+#define SSID "WIELKI MASZT 5G"
+#define PASS "StudentPiwo123"
 
-#define SSID "LSO-01"
-#define PASS "Lesio12345"
+// #define SSID "LSO-01"
+// #define PASS "Lesio12345"
 
 extern char IsWifiConnected;
 

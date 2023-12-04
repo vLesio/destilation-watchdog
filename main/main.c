@@ -18,6 +18,7 @@
 #include "temps.h"
 #include "d_mqtt.h"
 #include "buzzer.h"
+#include "influxdb.h"
 
 esp_err_t client_event_get_handler(esp_http_client_event_handle_t evt)
 {
@@ -63,15 +64,15 @@ void app_main(void)
 
     //xTaskCreate(buzz, "buzz", 4096, NULL, 5, NULL);
     while(1) {
-        vTaskDelay(2000 / 10);
+        vTaskDelay(5000.0 / portTICK_PERIOD_MS);
 
         // GET wifi
         if(IsWifiConnected == 0) {
             printf("WiFi not connected, skipping. WIFI_STATUS: %d\n", IsWifiConnected);
+            start_buzzer();
             continue;
         }else if(IsWifiConnected == 1) {
-            printf("Trying to GET something\n");
-            rest_get();
+            stop_buzzer();
         }
 
         // Read temp
@@ -79,6 +80,7 @@ void app_main(void)
         printf("Reading: %.1f Sample: %d\n", tempOne->temperature, tempOne->sample);
         printf("Reading: %.1f Sample: %d\n", tempTwo->temperature, tempTwo->sample);
 
-        mqtt_publish_temp(tempOne);
+        publish_temperatures(tempOne, tempTwo);
+        // mqtt_publish_temp(tempOne);
     }
 }
