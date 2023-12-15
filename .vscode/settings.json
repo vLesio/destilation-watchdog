@@ -18,7 +18,10 @@
         "event_groups.h": "c",
         "esp_wifi.h": "c",
         "*.cs": "cpp",
-        "freertos.h": "c"
+        "freertos.h": "c",
+        "esp_gap_ble_api.h": "c",
+        "global.c": "cpp",
+        "esp_gatt_common_api.h": "c"
     },
     "idf.flashType": "UART"
 }

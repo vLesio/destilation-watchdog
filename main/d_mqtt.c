@@ -80,4 +80,5 @@ void mqtt_publish_temp(TemperatureReading* temp) {
     char buffer[100];
     sprintf(&buffer, "{probe: %d, temperature: %.1f}", temp->probe, temp->temperature);
     mqtt_publish(TEMPERATURE_TOPIC, buffer);
+    //TODO: mqtt_publish(TEMPERATURE_TOPIC + deviceID, buffer);
 }

@@ -12,6 +12,7 @@ typedef struct {
     int errorsCount;
 }TemperatureReading;
 
+
 #define GPIO_DS18B20_0       (CONFIG_ONE_WIRE_GPIO)
 #define MAX_DEVICES          (2)
 #define DS18B20_RESOLUTION   (DS18B20_RESOLUTION_12_BIT)
@@ -19,5 +20,8 @@ typedef struct {
 
 void initialize_temp_sensors();
 void read_celcius();
+
+extern TemperatureReading* tempOne;
+extern TemperatureReading* tempTwo; 
 
 #endif

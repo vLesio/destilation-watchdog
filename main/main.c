@@ -81,6 +81,6 @@ void app_main(void)
         printf("Reading: %.1f Sample: %d\n", tempTwo->temperature, tempTwo->sample);
 
         publish_temperatures(tempOne, tempTwo);
-        // mqtt_publish_temp(tempOne);
+        mqtt_publish_temp(tempOne);
     }
 }

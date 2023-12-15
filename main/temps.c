@@ -25,7 +25,7 @@ bool IsTopTermConnected = 0;
 bool IsBottomTermConnected = 0;
 
 void initialize_temp_sensors() {
-    printf("Initializing temperature sensors...\n");
+    printf("Initializing temperature sensors... %d\n", sizeof(TemperatureReading)); 
 
     owb = owb_rmt_initialize(&rmt_driver_info, GPIO_DS18B20_0, RMT_CHANNEL_1, RMT_CHANNEL_0);
     owb_use_crc(owb, true);

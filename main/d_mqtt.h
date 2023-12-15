@@ -1,9 +1,9 @@
 #ifndef D_MQTT_
 #define D_MQTT_
 
-#include "temps.h"
+#include "temps.h" 
 
-#define TEMPERATURE_TOPIC "TEMP"
+#define TEMPERATURE_TOPIC "DEST_WATCHDOG/USER_ID/TEMPS"
 
 static const char *TAG_MQGTT = "MQTT_EXAMPLE";
 
