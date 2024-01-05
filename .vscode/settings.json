@@ -21,7 +21,8 @@
         "freertos.h": "c",
         "esp_gap_ble_api.h": "c",
         "global.c": "cpp",
-        "esp_gatt_common_api.h": "c"
+        "esp_gatt_common_api.h": "c",
+        "d_mqtt.h": "c"
     },
     "idf.flashType": "UART"
 }

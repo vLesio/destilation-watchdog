@@ -14,11 +14,11 @@
 #include "esp_netif.h"
 #include "esp_http_client.h"
 
-// #include "wifi.h"
+#include "wifi.h"
 #include "temps.h"
 // #include "d_mqtt.h"
 #include "buzzer.h"
-// #include "influxdb.h"
+#include "influxdb.h"
 #include "gatts_demo.h"
 
 esp_err_t client_event_get_handler(esp_http_client_event_handle_t evt)
@@ -56,7 +56,7 @@ void app_main(void)
     nvs_flash_init();
 
     initialize_buzzer();
-    // initialize_wifi();
+    initialize_wifi();
     initialize_temp_sensors();
     // initialize_mqtt();
     run_bt();
@@ -69,21 +69,20 @@ void app_main(void)
         vTaskDelay(5000.0 / portTICK_PERIOD_MS);
 
         // GET wifi
-        // if(IsWifiConnected == 0) {
-        //     printf("WiFi not connected, skipping. WIFI_STATUS: %d\n", IsWifiConnected);
-        //     start_buzzer();
-        //     continue;
-        // }else if(IsWifiConnected == 1) {
-        //     stop_buzzer();
-        // }
+        if(IsWifiConnected == 0) {
+            printf("WiFi not connected, skipping. WIFI_STATUS: %d\n", IsWifiConnected);
+            start_buzzer();
+            continue;
+        }else if(IsWifiConnected == 1) {
+            stop_buzzer();
+        }
 
         // Read temp
         read_celcius(tempOne, tempTwo);
         printf("Reading: %.1f Sample: %d\n", tempOne->temperature, tempOne->sample);
         printf("Reading: %.1f Sample: %d\n", tempTwo->temperature, tempTwo->sample);
-        setTemps(3.5, 8.999);
 
-        // publish_temperatures(tempOne, tempTwo);
+        publish_temperatures(tempOne, tempTwo);
         // mqtt_publish_temp(tempOne);
     }
 }
