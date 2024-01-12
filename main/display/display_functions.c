@@ -200,6 +200,7 @@ void task_ssd1306_display_clear(void *ignore) {
 void task_ssd1306_display_text(const void *arg_text) {
 	char *text = (char*)arg_text;
 	uint8_t text_len = strlen(text);
+    printf("\n\n\n\ntext_len\n\n\n\n = %d\n",text_len);
 
 	i2c_cmd_handle_t cmd;
 
@@ -238,6 +239,7 @@ void task_ssd1306_display_text(const void *arg_text) {
 			i2c_master_write_byte(cmd, (OLED_I2C_ADDRESS << 1) | I2C_MASTER_WRITE, true);
 
 			i2c_master_write_byte(cmd, OLED_CONTROL_BYTE_DATA_STREAM, true);
+            //printf("printing letter %c\n", &text[i]);
 			i2c_master_write(cmd, font8x8_basic_tr[(uint8_t)text[i]], 8, true);
 
 			i2c_master_stop(cmd);

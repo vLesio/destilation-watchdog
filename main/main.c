@@ -55,9 +55,12 @@ static void rest_get()
 void app_main(void)
 {
     esp_log_level_set("*", ESP_LOG_INFO);
-    vTaskDelay(1000.0 / portTICK_PERIOD_MS);
+    vTaskDelay(500.0 / portTICK_PERIOD_MS);
 
     nvs_flash_init();
+
+    initDisplay();
+    displayLoadingInfo();
 
     initialize_buzzer();
     initialize_wifi();
@@ -65,32 +68,46 @@ void app_main(void)
     // initialize_mqtt();
     // run_bt();
     
-    TemperatureReading* tempOne = malloc(sizeof(TemperatureReading));
-    TemperatureReading* tempTwo = malloc(sizeof(TemperatureReading));
-
-    initDisplay();
-    displayMockedShit();
+    TemperatureReading* tempKeg = malloc(sizeof(TemperatureReading));
+    TemperatureReading* tempColumn = malloc(sizeof(TemperatureReading));
+    tempKeg->lastValid = 20.0;
+    tempKeg->invalidCount = 0;
+    tempColumn->lastValid = 20.0;
+    tempColumn->invalidCount = 0;
 
     //xTaskCreate(buzz, "buzz", 4096, NULL, 5, NULL);
     while(1) {
         vTaskDelay(5000.0 / portTICK_PERIOD_MS);
+
+        // Read temp
+        read_celcius(tempKeg, tempColumn);
+        printf("Keg: %.1f Sample: %d\n", tempKeg->temperature, tempKeg->sample);
+        printf("Keg: %.1f Sample: %d\n", tempColumn->temperature, tempColumn->sample);
+
+        // Display information on screen
+        char displayText[70];
+        snprintf(displayText, sizeof(displayText), " Temperatures\n Column: %.2f%s\n Keg:    %.2f%s\n\n Wifi:\n %s",
+            tempColumn->temperature,
+            !tempColumn->invalidCount ? "" : " E",
+            tempKeg->temperature,
+            !tempKeg->invalidCount ? "" : " E",
+            IsWifiConnected ? "Connected" : "Disconnected");
+        displayTextTest(displayText);
 
         // GET wifi
         if(IsWifiConnected == 0) {
             printf("WiFi not connected, skipping. WIFI_STATUS: %d\n", IsWifiConnected);
             start_buzzer();
             continue;
-        }else if(IsWifiConnected == 1) {
+        }else{
             stop_buzzer();
         }
+        
+        check_temperatures(tempKeg, tempColumn);
 
-        // Read temp
-        read_celcius(tempOne, tempTwo);
-        printf("Reading: %.1f Sample: %d\n", tempOne->temperature, tempOne->sample);
-        printf("Reading: %.1f Sample: %d\n", tempTwo->temperature, tempTwo->sample);
         // setTemps(3.5, 8.999);
 
-        publish_temperatures(tempOne, tempTwo);
-        // mqtt_publish_temp(tempOne);
+        publish_temperatures(tempKeg, tempColumn);
+        // mqtt_publish_temp(tempKeg);
     }
 }

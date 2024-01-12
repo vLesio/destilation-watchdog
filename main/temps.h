@@ -8,6 +8,8 @@ typedef struct {
     int probe;
     float timestamp;
     float temperature;
+    int invalidCount;
+    float lastValid;
     int sample;
     int errorsCount;
 }TemperatureReading;
@@ -20,6 +22,7 @@ typedef struct {
 
 void initialize_temp_sensors();
 void read_celcius();
+void check_temperatures();
 
 extern TemperatureReading* tempOne;
 extern TemperatureReading* tempTwo; 

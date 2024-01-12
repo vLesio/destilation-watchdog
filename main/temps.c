@@ -8,6 +8,7 @@
 #include "ds18b20.h"
 
 #include "temps.h"
+#include "buzzer.h"
 
 // START OF AREA 51, DO NOT TOUCH UNDER ANY CIRCUMSTANCES
 
@@ -166,14 +167,36 @@ void read_celcius(TemperatureReading* tempOne, TemperatureReading* tempTwo) {
     }
 
     tempOne->probe = 1;
-    tempOne->temperature = readings[0];
+    if(readings[0] < 1) {
+        tempOne->temperature = tempOne->lastValid;
+        tempOne->invalidCount += 1;
+    }else{
+        tempOne->temperature = readings[0];
+        tempOne->lastValid = readings[0];
+        tempOne->invalidCount = 0;
+    }
     tempOne->sample = sample_count;
     tempOne->errorsCount = errors[0];
     
     tempTwo->probe = 2;
-    tempTwo->temperature = readings[1];
+    if(readings[1] < 1) {
+        tempTwo->temperature = tempTwo->lastValid;
+        tempTwo->invalidCount += 1;
+    }else{
+        tempTwo->temperature = readings[1];
+        tempTwo->lastValid = readings[1];
+        tempTwo->invalidCount = 0;
+    }
     tempTwo->sample = sample_count;
     tempTwo->errorsCount = errors[1];
+}
+
+void check_temperatures(TemperatureReading* tempKeg, TemperatureReading* tempColumn) {
+    if(tempKeg->invalidCount > 2 || tempColumn->invalidCount > 2){
+        start_buzzer();
+    }else{
+        stop_buzzer();
+    }
 }
 
 // END OF AREA 51
