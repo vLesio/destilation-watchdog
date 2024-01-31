@@ -20,10 +20,11 @@
 
 #include "wifi.h"
 #include "temps.h"
-// #include "d_mqtt.h"
+#include "d_mqtt.h"
 #include "buzzer.h"
-#include "influxdb.h"
+// #include "influxdb.h"
 // #include "gatts_demo.h"
+#include "ble.h"
 
 esp_err_t client_event_get_handler(esp_http_client_event_handle_t evt)
 {
@@ -65,8 +66,9 @@ void app_main(void)
     initialize_buzzer();
     initialize_wifi();
     initialize_temp_sensors();
-    // initialize_mqtt();
+    initialize_mqtt();
     // run_bt();
+    start_ble_server();
     
     TemperatureReading* tempKeg = malloc(sizeof(TemperatureReading));
     TemperatureReading* tempColumn = malloc(sizeof(TemperatureReading));
@@ -78,20 +80,22 @@ void app_main(void)
     //xTaskCreate(buzz, "buzz", 4096, NULL, 5, NULL);
     while(1) {
         vTaskDelay(5000.0 / portTICK_PERIOD_MS);
-
+        printf("MAC Address: %s\n", deviceId);
+        printf("Topic: %s\n", Topic);
         // Read temp
         read_celcius(tempKeg, tempColumn);
         printf("Keg: %.1f Sample: %d\n", tempKeg->temperature, tempKeg->sample);
-        printf("Keg: %.1f Sample: %d\n", tempColumn->temperature, tempColumn->sample);
+        printf("Column: %.1f Sample: %d\n", tempColumn->temperature, tempColumn->sample);
 
         // Display information on screen
         char displayText[70];
-        snprintf(displayText, sizeof(displayText), " Temperatures\n Column: %.2f%s\n Keg:    %.2f%s\n\n Wifi:\n %s",
+        snprintf(displayText, sizeof(displayText), " Temperatures\n Column: %.2f%s\n Keg:    %.2f%s\n\n Wifi:%s MQTT:%s",
             tempColumn->temperature,
             !tempColumn->invalidCount ? "" : " E",
             tempKeg->temperature,
             !tempKeg->invalidCount ? "" : " E",
-            IsWifiConnected ? "Connected" : "Disconnected");
+            IsWifiConnected ? "OK" : "NC",
+            IsMqttConnected ? "OK" : "NC");
         displayTextTest(displayText);
 
         // GET wifi
@@ -107,7 +111,7 @@ void app_main(void)
 
         // setTemps(3.5, 8.999);
 
-        publish_temperatures(tempKeg, tempColumn);
-        // mqtt_publish_temp(tempKeg);
+        // publish_temperatures(tempKeg, tempColumn);
+        mqtt_publish_temp(tempKeg, tempColumn);
     }
 }

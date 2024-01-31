@@ -6,6 +6,7 @@
 #include "esp_wifi.h" //esp_wifi_init functions and wifi operations
 #include "esp_log.h" //for showing logs
 #include "esp_event.h" //for wifi event
+#include "esp_efuse.h"
 #include "nvs_flash.h" //non volatile storage
 #include "lwip/err.h" //light weight ip packets error handling
 #include "lwip/sys.h" //system applications for light weight ip apps
@@ -20,6 +21,8 @@
 // Extern
 char IsWifiConnected = 0;
 
+uint8_t mac[6];
+char deviceId[13];
 // Private
 char connectRetryTries = 0;
 
@@ -66,4 +69,11 @@ void initialize_wifi() {
     esp_wifi_set_mode(WIFI_MODE_STA);
     esp_wifi_start();
     esp_wifi_connect();
+
+    if (esp_wifi_get_mac(ESP_IF_WIFI_STA, mac) != ESP_OK) {
+        printf("LOL MAC NOT DOUNF");
+    }
+    snprintf(deviceId, sizeof(deviceId), "%02x%02x%02x%02x%02x%02x",
+             mac[0], mac[1], mac[2],
+             mac[3], mac[4], mac[5]);
 }
