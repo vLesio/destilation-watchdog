@@ -23,8 +23,8 @@
 #include "d_mqtt.h"
 #include "buzzer.h"
 // #include "influxdb.h"
-// #include "gatts_demo.h"
-#include "ble.h"
+#include "gatts_demo.h"
+// #include "ble.h"
 
 esp_err_t client_event_get_handler(esp_http_client_event_handle_t evt)
 {
@@ -67,8 +67,8 @@ void app_main(void)
     initialize_wifi();
     initialize_temp_sensors();
     initialize_mqtt();
-    // run_bt();
-    start_ble_server();
+    run_bt();
+    // start_ble_server();
     
     TemperatureReading* tempKeg = malloc(sizeof(TemperatureReading));
     TemperatureReading* tempColumn = malloc(sizeof(TemperatureReading));
@@ -82,6 +82,8 @@ void app_main(void)
         vTaskDelay(5000.0 / portTICK_PERIOD_MS);
         printf("MAC Address: %s\n", deviceId);
         printf("Topic: %s\n", Topic);
+        printf("Char1: %s\n", char1_str);
+        printf("SSID: %s\n", char_ssid);
         // Read temp
         read_celcius(tempKeg, tempColumn);
         printf("Keg: %.1f Sample: %d\n", tempKeg->temperature, tempKeg->sample);
