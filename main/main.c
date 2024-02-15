@@ -80,10 +80,10 @@ void app_main(void)
     //xTaskCreate(buzz, "buzz", 4096, NULL, 5, NULL);
     while(1) {
         vTaskDelay(5000.0 / portTICK_PERIOD_MS);
-        printf("MAC Address: %s\n", deviceId);
-        printf("Topic: %s\n", Topic);
-        printf("Char1: %s\n", char1_str);
-        printf("SSID: %s\n", char_ssid);
+        // printf("MAC Address: %s\n", deviceId);
+        // printf("Topic: %s\n", Topic);
+        // printf("Char1: %s\n", char1_str);
+        // printf("SSID: %s\n", char_ssid);
         // Read temp
         read_celcius(tempKeg, tempColumn);
         printf("Keg: %.1f Sample: %d\n", tempKeg->temperature, tempKeg->sample);

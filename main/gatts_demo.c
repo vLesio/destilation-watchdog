@@ -200,7 +200,7 @@ static struct gatts_profile_inst gl_profile_tab[PROFILE_NUM] = {
         .gatts_if = ESP_GATT_IF_NONE,       /* Not get the gatt_if, so initial is ESP_GATT_IF_NONE */
     },
     [PROFILE_UID_APP_ID] = {
-        .gatts_cb = gatts_pass_event_handler,                   /* This demo does not implement, similar as profile A */
+        .gatts_cb = gatts_uid_event_handler,                   /* This demo does not implement, similar as profile A */
         .gatts_if = ESP_GATT_IF_NONE,       /* Not get the gatt_if, so initial is ESP_GATT_IF_NONE */
     },
 };
@@ -701,11 +701,13 @@ static void gatts_uid_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t ga
         memset(&rsp, 0, sizeof(esp_gatt_rsp_t));
 
         printf("Device is reading UID!");
+        // char mac_str[18]; // 6 bytes for the MAC address + 5 colons + 1 null terminator
+        // sprintf(mac_str, "%02X%02X%02X%02X%02X%02X",
+        //     mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
         rsp.attr_value.handle = param->read.handle;
-        char msg[] = "siema123";
-        rsp.attr_value.len = 8;
-         for (size_t i = 0; i < 8; ++i) {
-            rsp.attr_value.value[i] = msg[i];
+        rsp.attr_value.len = strlen(deviceId);
+         for (size_t i = 0; i < strlen(deviceId); ++i) {
+            rsp.attr_value.value[i] = deviceId[i];
         }
         esp_ble_gatts_send_response(gatts_if, param->read.conn_id, param->read.trans_id,
                                     ESP_GATT_OK, &rsp);
